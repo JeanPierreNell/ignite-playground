@@ -1,0 +1,104 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Ignite Configuration -->
+    <bean class="org.apache.ignite.configuration.IgniteConfiguration">
+        <property name="workDirectory" value="/storage" />
+
+        <property name="dataStorageConfiguration">
+            <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
+                <property name="defaultDataRegionConfiguration">
+                    <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
+                        <property name="persistenceEnabled" value="true" />
+                    </bean>
+                </property>
+            </bean>
+        </property>
+
+        <property name="cacheConfiguration">
+            <list>
+                <!-- Main Cache for Pain001 -->
+                <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                    <property name="name" value="Pain001Cache" />
+                    <property name="cacheMode" value="PARTITIONED" />
+                    <property name="sqlSchema" value="Pain001Schema" />
+                    <property name="queryEntities">
+                        <list>
+                            <!-- Pain001 Table -->
+                            <bean class="org.apache.ignite.cache.QueryEntity">
+                                <property name="keyType" value="java.lang.String" />
+                                <property name="valueType" value="Pain001" />
+                                <property name="tableName" value="Pain001" />
+                                <property name="keyFieldName" value="_key" />
+                                <property name="fields">
+                                    <map>
+                                        <entry key="_key" value="java.lang.String" />
+                                        <entry key="TxTp" value="java.lang.String" />
+                                        <entry key="CstmrCdtTrfInitn_GrpHdr_MsgId"
+                                            value="java.lang.String" />
+                                        <entry key="CstmrCdtTrfInitn_GrpHdr_CreDtTm"
+                                            value="java.lang.String" />
+                                        <entry key="CstmrCdtTrfInitn_GrpHdr_NbOfTxs"
+                                            value="java.lang.Integer" />
+                                        <entry key="CstmrCdtTrfInitn_GrpHdr_InitgPty_Nm"
+                                            value="java.lang.String" />
+                                        <entry
+                                            key="CstmrCdtTrfInitn_GrpHdr_InitgPty_Id_PrvtId_DtAndPlcOfBirth_BirthDt"
+                                            value="java.util.Date" />
+                                        <entry
+                                            key="CstmrCdtTrfInitn_GrpHdr_InitgPty_Id_PrvtId_DtAndPlcOfBirth_CityOfBirth"
+                                            value="java.lang.String" />
+                                        <entry
+                                            key="CstmrCdtTrfInitn_GrpHdr_InitgPty_Id_PrvtId_DtAndPlcOfBirth_CtryOfBirth"
+                                            value="java.lang.String" />
+                                        <!-- Add other non-array fields here -->
+                                    </map>
+                                </property>
+                                <property name="indexes">
+                                    <list>
+                                        <bean class="org.apache.ignite.cache.QueryIndex">
+                                            <property name="name" value="Pain001Index" />
+                                            <property name="fields">
+                                                <map>
+                                                    <entry key="_key" value="ASC" />
+                                                </map>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <!-- Othr Array Table -->
+                            <bean class="org.apache.ignite.cache.QueryEntity">
+                                <property name="keyType" value="java.lang.String" />
+                                <property name="valueType" value="Othr" />
+                                <property name="tableName" value="Othr" />
+                                <property name="fields">
+                                    <map>
+                                        <entry key="Id" value="java.lang.String" />
+                                        <entry key="SchmeNm_Prtry" value="java.lang.String" />
+                                        <!-- Foreign key to Pain001 -->
+                                        <entry key="Pain001Id" value="java.lang.String" />
+                                    </map>
+                                </property>
+                                <property name="indexes">
+                                    <list>
+                                        <bean class="org.apache.ignite.cache.QueryIndex">
+                                            <property name="fields">
+                                                <map>
+                                                    <entry key="Pain001Id" value="ASC" />
+                                                </map>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <!-- Repeat for other array-based tables -->
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>
